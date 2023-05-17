@@ -239,6 +239,51 @@ func setFlags(cmd *cobra.Command) {
 			"",
 			"configuration of reward wallet in format <address:amount>",
 		)
+
+		cmd.Flags().Uint64Var(
+			&params.checkpointInterval,
+			checkpointIntervalFlag,
+			defaultCheckpointInterval,
+			"number of blocks after which a new checkpoint is submitted",
+		)
+
+		cmd.Flags().Uint64Var(
+			&params.withdrawalWaitPeriod,
+			withdrawalWaitPeriodFlag,
+			defaultWithdrawalWaitPeriod,
+			"number of epochs after which withdrawal can be done from child chain",
+		)
+
+		cmd.Flags().Uint64Var(
+			&params.slashingPercentage,
+			slashingPercentageFlag,
+			defaultSlashingPercentage,
+			"percentage of stake to be slashed for a malicious validator",
+		)
+	}
+
+	// Governance
+	{
+		cmd.Flags().StringVar(
+			&params.voteDelay,
+			voteDelayFlag,
+			defaultVotingDelay,
+			"number of blocks after proposal is submitted before voting starts",
+		)
+
+		cmd.Flags().StringVar(
+			&params.votingPeriod,
+			votePeriodFlag,
+			defaultVotingPeriod,
+			"number of blocks that the voting period for a proposal lasts",
+		)
+
+		cmd.Flags().StringVar(
+			&params.proposalThreshold,
+			voteProposalThresholdFlag,
+			defaultVoteProposalThreshold,
+			"number of vote tokens required in order for a voter to become a proposer",
+		)
 	}
 
 	// Access Control Lists

@@ -25,20 +25,26 @@ import (
 )
 
 const (
-	dirFlag               = "dir"
-	nameFlag              = "name"
-	premineFlag           = "premine"
-	chainIDFlag           = "chain-id"
-	epochSizeFlag         = "epoch-size"
-	epochRewardFlag       = "epoch-reward"
-	blockGasLimitFlag     = "block-gas-limit"
-	burnContractFlag      = "burn-contract"
-	posFlag               = "pos"
-	minValidatorCount     = "min-validator-count"
-	maxValidatorCount     = "max-validator-count"
-	nativeTokenConfigFlag = "native-token-config"
-	rewardTokenCodeFlag   = "reward-token-code"
-	rewardWalletFlag      = "reward-wallet"
+	dirFlag                   = "dir"
+	nameFlag                  = "name"
+	premineFlag               = "premine"
+	chainIDFlag               = "chain-id"
+	epochSizeFlag             = "epoch-size"
+	epochRewardFlag           = "epoch-reward"
+	blockGasLimitFlag         = "block-gas-limit"
+	burnContractFlag          = "burn-contract"
+	posFlag                   = "pos"
+	minValidatorCount         = "min-validator-count"
+	maxValidatorCount         = "max-validator-count"
+	nativeTokenConfigFlag     = "native-token-config"
+	rewardTokenCodeFlag       = "reward-token-code"
+	rewardWalletFlag          = "reward-wallet"
+	checkpointIntervalFlag    = "checkpoint-interval"
+	withdrawalWaitPeriodFlag  = "withdrawal-wait-period"
+	slashingPercentageFlag    = "slashing-percentage"
+	voteDelayFlag             = "vote-delay"
+	votePeriodFlag            = "vote-period"
+	voteProposalThresholdFlag = "vote-proposal-threshold"
 
 	defaultNativeTokenName     = "Polygon"
 	defaultNativeTokenSymbol   = "MATIC"
@@ -63,6 +69,8 @@ var (
 		"(<name:symbol:decimals count:mintable flag>)")
 	errRewardWalletAmountZero = errors.New("reward wallet amount can not be zero or negative")
 	errChainIDPolyBFT         = errors.New("chain id can not be set for polybft consensus")
+	errInvalidSlashPercentage = errors.New("slash percentage can not be greater than 100")
+	errInvalidVotingPeriod    = errors.New("voting period can not be zero")
 )
 
 type genesisParams struct {
@@ -128,6 +136,15 @@ type genesisParams struct {
 	// rewards
 	rewardTokenCode string
 	rewardWallet    string
+
+	checkpointInterval   uint64
+	withdrawalWaitPeriod uint64
+	slashingPercentage   uint64
+
+	// governance
+	voteDelay         string
+	votingPeriod      string
+	proposalThreshold string
 }
 
 func (p *genesisParams) validateFlags() error {
@@ -154,6 +171,10 @@ func (p *genesisParams) validateFlags() error {
 
 		if p.chainID != command.DefaultChainID {
 			return errChainIDPolyBFT
+		}
+
+		if p.slashingPercentage > 100 {
+			return errInvalidSlashPercentage
 		}
 	}
 

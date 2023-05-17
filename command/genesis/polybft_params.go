@@ -37,11 +37,17 @@ const (
 	blockTimeFlag  = "block-time"
 	trieRootFlag   = "trieroot"
 
-	defaultEpochSize        = uint64(10)
-	defaultSprintSize       = uint64(5)
-	defaultValidatorSetSize = 100
-	defaultBlockTime        = 2 * time.Second
-	defaultEpochReward      = 1
+	defaultEpochSize             = uint64(10)
+	defaultSprintSize            = uint64(5)
+	defaultValidatorSetSize      = 100
+	defaultBlockTime             = 2 * time.Second
+	defaultEpochReward           = 1
+	defaultCheckpointInterval    = uint64(900)
+	defaultWithdrawalWaitPeriod  = uint64(1)
+	defaultSlashingPercentage    = uint64(50)
+	defaultVotingDelay           = "10"
+	defaultVotingPeriod          = "20"
+	defaultVoteProposalThreshold = "1000"
 
 	contractDeployerAllowListAdminFlag   = "contract-deployer-allow-list-admin"
 	contractDeployerAllowListEnabledFlag = "contract-deployer-allow-list-enabled"
@@ -123,6 +129,25 @@ func (p *genesisParams) generatePolyBftChainConfig(o command.OutputFormatter) er
 		}
 	}
 
+	voteDelay, err := types.ParseUint256orHex(&p.voteDelay)
+	if err != nil {
+		return err
+	}
+
+	votingPeriod, err := types.ParseUint256orHex(&p.votingPeriod)
+	if err != nil {
+		return err
+	}
+
+	if votingPeriod.Cmp(big.NewInt(0)) == 0 {
+		return errInvalidVotingPeriod
+	}
+
+	proposalThreshold, err := types.ParseUint256orHex(&p.proposalThreshold)
+	if err != nil {
+		return err
+	}
+
 	polyBftConfig := &polybft.PolyBFTConfig{
 		InitialValidatorSet: initialValidators,
 		BlockTime:           common.Duration{Duration: p.blockTime},
@@ -130,14 +155,23 @@ func (p *genesisParams) generatePolyBftChainConfig(o command.OutputFormatter) er
 		SprintSize:          p.sprintSize,
 		EpochReward:         p.epochReward,
 		// use 1st account as governance address
-		Governance:          initialValidators[0].Address,
-		InitialTrieRoot:     types.StringToHash(p.initialStateRoot),
-		NativeTokenConfig:   p.nativeTokenConfig,
-		MaxValidatorSetSize: p.maxNumValidators,
+		Governance:           initialValidators[0].Address,
+		InitialTrieRoot:      types.StringToHash(p.initialStateRoot),
+		NativeTokenConfig:    p.nativeTokenConfig,
+		MinValidatorSetSize:  p.minNumValidators,
+		MaxValidatorSetSize:  p.maxNumValidators,
+		CheckpointInterval:   p.checkpointInterval,
+		WithdrawalWaitPeriod: p.withdrawalWaitPeriod,
+		SlashingPercentage:   p.slashingPercentage,
 		RewardConfig: &polybft.RewardsConfig{
 			TokenAddress:  rewardTokenAddr,
 			WalletAddress: walletPremineInfo.address,
 			WalletAmount:  walletPremineInfo.amount,
+		},
+		GovernanceConfig: &polybft.GovernanceConfig{
+			VotingDelay:       voteDelay,
+			VotingPeriod:      votingPeriod,
+			ProposalThreshold: proposalThreshold,
 		},
 	}
 
