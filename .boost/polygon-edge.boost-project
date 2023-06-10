@@ -1,0 +1,67 @@
+{
+  "summary": {
+    "summaryUrl": "/Users/emwon/Documents/GitHub/keplr-chain-registry/polygon-edge/.boost/polygon-edge.summary.boost-notebook",
+    "filesToAnalyze": 0,
+    "filesAnalyzed": 0,
+    "issues": []
+  },
+  "sectionSummary": [
+    {
+      "analysisType": "blueprint",
+      "status": "not-started",
+      "completed": 0,
+      "error": 0,
+      "total": 0
+    },
+    {
+      "analysisType": "explain",
+      "status": "not-started",
+      "completed": 0,
+      "error": 0,
+      "total": 0
+    },
+    {
+      "analysisType": "flowDiagram",
+      "status": "not-started",
+      "completed": 0,
+      "error": 0,
+      "total": 0
+    },
+    {
+      "analysisType": "bugAnalyze",
+      "status": "not-started",
+      "completed": 0,
+      "error": 0,
+      "total": 0
+    },
+    {
+      "analysisType": "compliance",
+      "status": "not-started",
+      "completed": 0,
+      "error": 0,
+      "total": 0
+    }
+  ],
+  "analysis": [
+    {
+      "name": "bugAnalyze",
+      "children": []
+    },
+    {
+      "name": "compliance",
+      "children": []
+    },
+    {
+      "name": "archblueprintCode",
+      "children": []
+    },
+    {
+      "name": "flowDiagram",
+      "children": []
+    },
+    {
+      "name": "explain",
+      "children": []
+    }
+  ]
+}
